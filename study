@@ -1,0 +1,47 @@
+#!/bin/bash
+
+lsc() {
+    read -p "검색할 디렉토리 경로를 입력해주세요: " dir
+
+    if [ -z "$dir" ]; then
+        dir=.
+    fi
+
+    ls_file=$(find "$dir" -type f)
+
+    read -p "파일 사이즈는 몇 이상으로 출력할까요?: " SIZE
+
+    case $SIZE in
+        "")
+            ls_file_1="$ls_file"
+		echo "$ls_file_1";;
+        *)
+		ls_file_1=$(find "$dir" -type f -size +"$SIZE"c)
+		echo "$ls_file_1";;
+    esac
+
+    read -p "파일 이름에 포함되어야 하는 문자를 입력해 주세요: " NAME
+
+    case $NAME in
+        "")
+            ls_file_2="$ls_file_1"
+		echo "$ls_file_2";;
+        *)
+            ls_file_2=$(find "$dir" -type f -name "*$NAME*" | grep -F "$ls_file_1")
+		echo "$ls_file_2";;
+    esac
+
+    read -p "파일 내용에 포함되어야 하는 문자를 입력해 주세요: " TEXT
+
+    case $TEXT in
+        "")
+            ls_file_3="$ls_file_2"
+		echo "$ls_file_3";;
+        *)
+            ls_file_3=$(echo "$ls_file_2" | xargs grep -l "$TEXT")
+		echo "$ls_file_3";;
+    esac
+
+}
+
+lsc
